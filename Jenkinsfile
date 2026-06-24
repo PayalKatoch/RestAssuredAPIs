@@ -10,9 +10,15 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                sh 'mvn clean test'
+                sh 'docker build -t api-automation .'
+            }
+        }
+
+        stage('Run API Tests') {
+            steps {
+                sh 'docker run --rm api-automation'
             }
         }
     }
