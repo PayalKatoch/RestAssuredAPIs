@@ -1,0 +1,11 @@
+target/
+.idea/
+.DS_Store
+
+*.log
+
+reports/
+surefire-reports/
+
+allure-results/
+allure-report/
