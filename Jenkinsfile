@@ -1,8 +1,20 @@
 pipeline {
 
+```
 agent any
 
+options {
+    skipDefaultCheckout(true)
+}
+
 stages {
+
+    stage('Checkout') {
+        steps {
+            git branch: 'main',
+                url: 'https://github.com/PayalKatoch/RestAssuredAPIs.git'
+        }
+    }
 
     stage('Build Docker Image') {
         steps {
@@ -16,5 +28,6 @@ stages {
         }
     }
 }
+```
 
 }
