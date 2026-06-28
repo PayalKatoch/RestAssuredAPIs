@@ -1,0 +1,38 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="API Test Suite" parallel="classes" thread-count="3">
+
+    <listeners>
+        <listener class-name="utils.RetryListener"/>
+    </listeners>
+
+    <test name="Setup">
+        <classes>
+            <class name="test.BaseTest"/>
+        </classes>
+    </test>
+
+    <test name="Ecommerce API Tests">
+        <classes>
+            <class name="test.EcommerceAPITest"/>
+        </classes>
+    </test>
+
+    <test name="Spotify API Tests">
+        <classes>
+            <class name="test.SpotifyPlaylistTest"/>
+        </classes>
+    </test>
+
+    <test name="Google Maps and Utility Tests">
+        <classes>
+            <class name="test.GoogleMapAPITest"/>
+            <class name="test.SerializationTest"/>
+            <class name="test.EcommerceSpecBuilderTest"/>
+            <class name="test.ComplexJsonParseTest"/>
+            <class name="test.SumValidationLogicTest"/>
+            <class name="test.OAuthTest"/>
+            <class name="test.DynamicJsonTest"/>
+        </classes>
+    </test>
+
+</suite>
