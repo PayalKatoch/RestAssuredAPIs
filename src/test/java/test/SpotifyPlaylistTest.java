@@ -6,6 +6,7 @@ import net.datafaker.Faker;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pojo.Playlist;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 public class SpotifyPlaylistTest {
 
@@ -22,6 +23,7 @@ public class SpotifyPlaylistTest {
         Response response = SpotifyAPI.createPlaylist(playlist);
 
         Assert.assertEquals(response.getStatusCode(), 201);
+        response.then().body(matchesJsonSchemaInClasspath("schema/spotify-create-playlist.json"));
         Assert.assertEquals(response.jsonPath().getString("name"), playlist.getName());
         Assert.assertEquals(response.jsonPath().getString("description"), playlist.getDescription());
 
@@ -34,6 +36,7 @@ public class SpotifyPlaylistTest {
         Response response = SpotifyAPI.getPlaylist(playlistId);
 
         Assert.assertEquals(response.getStatusCode(), 200);
+        response.then().body(matchesJsonSchemaInClasspath("schema/spotify-get-playlist.json"));
         Assert.assertNotNull(response.jsonPath().getString("name"));
         Assert.assertNotNull(response.jsonPath().getString("id"));
 
@@ -57,6 +60,7 @@ public class SpotifyPlaylistTest {
         Response response = SpotifyAPI.getPlaylist(playlistId);
 
         Assert.assertEquals(response.getStatusCode(), 200);
+        response.then().body(matchesJsonSchemaInClasspath("schema/spotify-get-playlist.json"));
         Assert.assertTrue(response.jsonPath().getString("name").startsWith("Updated -"));
 
         System.out.println("Updated Playlist Name: " + response.jsonPath().getString("name"));

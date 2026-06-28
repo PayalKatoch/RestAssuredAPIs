@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.*;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 public class EcommerceAPITest {
 
@@ -33,7 +34,9 @@ public class EcommerceAPITest {
         RequestSpecification reqAddProduct = given().log().all().spec(EcommerceSpecBuilder.addProduct(token, userId));
 
         String addProductResponse = reqAddProduct.when().post(Route.ADD_PRODUCT)
-                .then().log().all().extract().response().asString();
+                .then().log().all()
+                .body(matchesJsonSchemaInClasspath("schema/add-product.json"))
+                .extract().response().asString();
 
         JsonPath js = new JsonPath(addProductResponse);
         productID = js.getString("productId");
@@ -56,7 +59,9 @@ public class EcommerceAPITest {
         RequestSpecification createOrderReq = given().log().all().spec(EcommerceSpecBuilder.createProduct(token)).body(orders);
 
         String responseAddOrder = createOrderReq.when().post(Route.CREATE_ORDER)
-                .then().log().all().extract().response().asString();
+                .then().log().all()
+                .body(matchesJsonSchemaInClasspath("schema/create-order.json"))
+                .extract().response().asString();
         System.out.println(responseAddOrder);
     }
 
@@ -65,7 +70,9 @@ public class EcommerceAPITest {
         Assert.assertNotNull(productID, "productID is null - addProduct may have failed");
         RequestSpecification deleteProdReq = given().log().all().spec(EcommerceSpecBuilder.deleteProduct(token)).pathParams("productId", productID);
         String deleteProductResponse = deleteProdReq.when().delete(Route.DELETE_PRODUCT)
-                .then().log().all().extract().response().asString();
+                .then().log().all()
+                .body(matchesJsonSchemaInClasspath("schema/delete-product.json"))
+                .extract().response().asString();
 
         JsonPath js1 = new JsonPath(deleteProductResponse);
         Assert.assertEquals(js1.get("message"), "Product Deleted Successfully");

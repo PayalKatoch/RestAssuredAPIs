@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["id", "name", "type", "uri", "href", "external_urls", "owner"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+    "collaborative": { "type": "boolean" },
+    "public": { "type": ["boolean", "null"] },
+    "type": { "type": "string", "enum": ["playlist"] },
+    "uri": { "type": "string" },
+    "href": { "type": "string" },
+    "snapshot_id": { "type": "string" },
+    "external_urls": {
+      "type": "object",
+      "properties": {
+        "spotify": { "type": "string" }
+      }
+    },
+    "owner": {
+      "type": "object",
+      "required": ["id", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "uri": { "type": "string" },
+        "display_name": { "type": ["string", "null"] }
+      }
+    },
+    "followers": { "type": "object" },
+    "images": { "type": ["array", "null"] },
+    "items": { "type": "object" },
+    "tracks": { "type": "object" },
+    "primary_color": { "type": ["string", "null"] }
+  }
+}
