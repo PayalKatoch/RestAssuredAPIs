@@ -3,12 +3,16 @@ package utils;
 import api.Route;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Base64;
 
 import static io.restassured.RestAssured.given;
 
 public class TokenManager {
+
+    private static final Logger log = LogManager.getLogger(TokenManager.class);
 
     private static String spotifyAccessToken;
     private static long spotifyTokenExpiry;
@@ -18,6 +22,7 @@ public class TokenManager {
 
     public static synchronized String getSpotifyAccessToken() {
         if (spotifyAccessToken == null || System.currentTimeMillis() >= spotifyTokenExpiry) {
+            log.info("Spotify token missing or expired, renewing...");
             renewSpotifyToken();
         }
         return spotifyAccessToken;
@@ -43,6 +48,7 @@ public class TokenManager {
         spotifyAccessToken = js.getString("access_token");
         int expiresIn = js.getInt("expires_in");
         spotifyTokenExpiry = System.currentTimeMillis() + ((expiresIn - 60) * 1000L);
+        log.info("Spotify token renewed, expires in {} seconds", expiresIn);
     }
 
     public static synchronized String getEcommerceToken() {
@@ -62,6 +68,7 @@ public class TokenManager {
     private static void loginEcommerce() {
         if (ecommerceToken != null) return;
 
+        log.info("Logging into ecommerce API...");
         Response response = given()
                 .baseUri(ConfigLoader.getInstance().getBaseUrl())
                 .contentType("application/json")
@@ -73,5 +80,6 @@ public class TokenManager {
         JsonPath js = new JsonPath(response.asString());
         ecommerceToken = js.getString("token");
         ecommerceUserId = js.getString("userId");
+        log.info("Ecommerce login successful, userId: {}", ecommerceUserId);
     }
 }

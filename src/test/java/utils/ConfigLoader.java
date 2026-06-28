@@ -1,14 +1,20 @@
 package utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Properties;
 
 public class ConfigLoader {
+
+    private static final Logger log = LogManager.getLogger(ConfigLoader.class);
 
     private final Properties properties;
     private static ConfigLoader configLoader;
 
     private ConfigLoader() {
         String env = System.getProperty("env", "qa");
+        log.info("Loading config for environment: {}", env);
         properties = PropertyUtils.propertyLoader("src/test/resources/config-" + env + ".properties");
     }
 
