@@ -6,6 +6,10 @@ pipeline {
         choice(name: 'ENV', choices: ['qa', 'staging', 'prod'], description: 'Select the test environment')
     }
 
+    tools {
+        allure 'allure'
+    }
+
     options {
         skipDefaultCheckout(true)
         timestamps()
@@ -28,12 +32,14 @@ pipeline {
 
         stage('Run API Tests') {
             steps {
-                sh """
-                    docker run --rm \
-                        -v \${WORKSPACE}/allure-results:/app/target/allure-results \
-                        -v \${WORKSPACE}/surefire-reports:/app/target/surefire-reports \
-                        api-automation mvn clean test -Denv=${params.ENV}
-                """
+                sh 'docker run --name api-test-run api-automation mvn clean test -Denv=${ENV}'
+            }
+            post {
+                always {
+                    sh 'docker cp api-test-run:/app/target/allure-results ./allure-results || true'
+                    sh 'docker cp api-test-run:/app/target/surefire-reports ./surefire-reports || true'
+                    sh 'docker rm api-test-run || true'
+                }
             }
         }
     }
@@ -42,8 +48,7 @@ pipeline {
         always {
             allure includeProperties: false,
                    results: [[path: 'allure-results']]
-
-            junit 'surefire-reports/*.xml'
+            junit allowEmptyResults: true, testResults: 'surefire-reports/*.xml'
         }
         failure {
             echo "API Tests failed on ${params.ENV} environment!"
