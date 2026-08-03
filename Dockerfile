@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
   && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
   && apt-get install -y --no-install-recommends nodejs \
-  && npm install -g allure-commandline@2.29.1 \
+  && npm install -g allure-commandline@2.43.0 \
   && rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_HOME=/opt/java/openjdk
