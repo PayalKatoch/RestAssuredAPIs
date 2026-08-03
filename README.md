@@ -142,6 +142,8 @@ To run Spotify playlist tests, you need a one-time setup:
 4. Run `SpotifyAuthHelper` to get your refresh token
 5. Add credentials to `config-qa.properties`
 
+> Note: Spotify playlist tests are currently disabled because the app owner requires an active Spotify Premium subscription for playlist creation. Re-enable `SpotifyPlaylistTest` only after validating a Premium account and valid refresh token.
+
 ## Configuration
 
 All environment-specific values are in `config-{env}.properties`:
