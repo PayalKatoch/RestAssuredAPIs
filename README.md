@@ -110,8 +110,18 @@ allure open target/allure-report
 ### Run with Docker
 
 ```bash
-docker build -t api-automation .
-docker run --rm api-automation mvn clean test -Denv=qa
+# Build the Docker image
+docker build -t restassured-api-tests .
+
+# Run the tests inside the container
+docker run --rm -v "$PWD:/app" -w /app restassured-api-tests
+```
+
+You can also run the local helper script:
+
+```bash
+chmod +x run-in-docker.sh
+./run-in-docker.sh
 ```
 
 ### Jenkins Pipeline

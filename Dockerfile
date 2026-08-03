@@ -1,13 +1,15 @@
-FROM node:24-bullseye
+FROM maven:3.9.6-eclipse-temurin-21
 
-# Install OpenJDK 21 and Maven
+# Install Node 24 and required utilities
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-21-jdk \
-    maven \
+    curl \
+    gnupg \
     unzip \
+  && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+  && apt-get install -y --no-install-recommends nodejs \
   && rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+ENV JAVA_HOME=/opt/java/openjdk
 ENV MAVEN_HOME=/usr/share/maven
 ENV PATH="$MAVEN_HOME/bin:$JAVA_HOME/bin:$PATH"
 
