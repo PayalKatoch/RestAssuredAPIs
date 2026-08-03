@@ -1,5 +1,7 @@
 # REST Assured API Automation Framework
 
+![CI](https://github.com/PayalKatoch/RestAssuredAPIs/actions/workflows/ci.yml/badge.svg)
+
 A scalable, production-ready API test automation framework built with **REST Assured**, **TestNG**, and **Java 21**.
 
 ## Tech Stack
@@ -92,8 +94,17 @@ mvn clean test -Denv=prod
 # Run a specific test class
 mvn test -Dtest=test.SpotifyPlaylistTest
 
-# Generate and view Allure report
-mvn clean test -Denv=qa && allure serve target/allure-results
+# Generate Allure results locally
+mvn clean test -Denv=qa
+allure serve target/allure-results
+```
+
+### Generate Allure HTML report locally
+
+```bash
+mvn clean test -Denv=qa
+allure generate target/allure-results -o target/allure-report --clean
+allure open target/allure-report
 ```
 
 ### Run with Docker
