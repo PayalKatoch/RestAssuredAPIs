@@ -7,37 +7,23 @@ on:
 
 jobs:
   test:
-    name: Run Rest Assured tests
+    name: Run Rest Assured tests in Docker
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
+      - name: Build Docker image
+        run: docker build -t restassured-api-tests .
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
-
-      - name: Run Maven tests
-        run: mvn -B clean test
-
-      - name: Generate Allure HTML report
-        if: success()
+      - name: Run tests inside Docker container
         run: |
-          curl -sL https://repo1.maven.org/maven2/io/qameta/allure/allure-commandline/2.29.1/allure-commandline-2.29.1.zip -o /tmp/allure-commandline.zip
-          unzip -q /tmp/allure-commandline.zip -d /tmp
-          chmod +x /tmp/allure-2.29.1/bin/allure
-          /tmp/allure-2.29.1/bin/allure generate target/allure-results -o target/allure-report --clean
+          docker run --rm \
+            -v "${{ github.workspace }}:/app" \
+            -w /app \
+            restassured-api-tests \
+            /bin/bash -lc "mvn -B clean test && curl -sL https://repo1.maven.org/maven2/io/qameta/allure/allure-commandline/2.29.1/allure-commandline-2.29.1.zip -o /tmp/allure-commandline.zip && unzip -q /tmp/allure-commandline.zip -d /tmp && chmod +x /tmp/allure-2.29.1/bin/allure && /tmp/allure-2.29.1/bin/allure generate target/allure-results -o target/allure-report --clean"
 
       - name: Upload Allure and test reports
         uses: actions/upload-artifact@v4
