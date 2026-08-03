@@ -17,13 +17,13 @@ jobs:
       - name: Build Docker image
         run: docker build -t restassured-api-tests .
 
-      - name: Run tests inside Docker container
+      - name: Run tests and generate Allure report inside Docker container
         run: |
           docker run --rm \
             -v "${{ github.workspace }}:/app" \
             -w /app \
             restassured-api-tests \
-            /bin/bash -lc "mvn -B clean test && curl -sL https://repo1.maven.org/maven2/io/qameta/allure/allure-commandline/2.29.1/allure-commandline-2.29.1.zip -o /tmp/allure-commandline.zip && unzip -q /tmp/allure-commandline.zip -d /tmp && chmod +x /tmp/allure-2.29.1/bin/allure && /tmp/allure-2.29.1/bin/allure generate target/allure-results -o target/allure-report --clean"
+            /bin/bash -lc "mvn -B clean test && allure generate target/allure-results -o target/allure-report --clean"
 
       - name: Upload Allure and test reports
         uses: actions/upload-artifact@v4
